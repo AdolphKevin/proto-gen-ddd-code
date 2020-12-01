@@ -78,9 +78,18 @@ func handler(file *os.File, content []string) {
 	}
 }
 func requestToDTO(file *os.File, prefixName string, content []string) {
+	// generate dto struct
 	structName := prefixName + "ReqDTO"
+	util.FilePrintf(file, requestGenDTOStruct(structName,content))
+
+	// generate pb to dto func
+	util.FilePrintf(file,requestGenPBToDTO(prefixName,content))
+
+}
+
+func requestGenDTOStruct(structName string,content []string) string{
 	var sb strings.Builder
-	util.FilePrintf(file, fmt.Sprintf("type %s struct {\n", structName))
+	sb.WriteString(fmt.Sprintf("type %s struct {\n", structName))
 	for i := 1; i+1 < len(content); i = i + 2 {
 		sb.WriteString("\t")
 		sb.WriteString(util.HandlerFiledName(content[i+1]))
@@ -88,9 +97,34 @@ func requestToDTO(file *os.File, prefixName string, content []string) {
 		sb.WriteString(util.TypeConvert(content[i]))
 		sb.WriteString("\n")
 	}
-	util.FilePrintf(file, sb.String())
-	util.FilePrintf(file, fmt.Sprintf("}\n\n"))
+	sb.WriteString(fmt.Sprintf("}\n\n"))
+	return sb.String()
 }
+
+func requestGenPBToDTO(prefixName string,content []string) string{
+	funcName := "PBToDTO"+prefixName
+	structName := prefixName + "ReqDTO"
+	pbStructName := prefixName+"Request"
+	var sb strings.Builder
+	// func PBToDTOBatchResultSendRecord(param *pb.BatchResultSendRecordRequest)(result *BatchResultSendRecordReqDTO) {
+	sb.WriteString(fmt.Sprintf("func %s(param *pb.%s)(result *%s) {\n", funcName,pbStructName,structName))
+
+	// new dto
+	sb.WriteString(fmt.Sprintf("\tresult = &%s{\n",structName))
+	for i := 1; i+1 < len(content); i = i + 2 {
+		sb.WriteString("\t\t")
+		filedName := util.HandlerFiledName(content[i+1])
+		//TaskId:    r.TaskId,
+		sb.WriteString(fmt.Sprintf("%s: param.%s,\n",filedName,filedName))
+	}
+	sb.WriteString("\t}\n\n")
+	// return dto
+	sb.WriteString("\treturn result\n")
+
+	sb.WriteString("}\n\n")
+	return  sb.String()
+}
+
 func dtoToResponse(prefixName string, content []string) {
 	//structName := prefixName + "RespDTO"
 	for i := 1; i < len(content); i++ {

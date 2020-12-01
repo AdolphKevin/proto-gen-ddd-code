@@ -4,3 +4,13 @@ type BatchResultSendRecordReqDTO struct {
 	HelloWorld	int32
 }
 
+func PBToDTOBatchResultSendRecord(param *pb.BatchResultSendRecordRequest)(result *BatchResultSendRecordReqDTO) {
+	result = &BatchResultSendRecordReqDTO{
+		BatchNo: param.BatchNo,
+		Message: param.Message,
+		HelloWorld: param.HelloWorld,
+	}
+
+	return result
+}
+
