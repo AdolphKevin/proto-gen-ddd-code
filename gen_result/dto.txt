@@ -1,0 +1,32 @@
+type BatchResultSendRecordReqDTO struct {
+	BatchNo	string
+	Message	int64
+	HelloWorld	int32
+}
+
+func PBToDTOBatchResultSendRecord(param *pb.BatchResultSendRecordRequest)(result *BatchResultSendRecordReqDTO) {
+	result = &BatchResultSendRecordReqDTO{
+		BatchNo: param.BatchNo,
+		Message: param.Message,
+		HelloWorld: param.HelloWorld,
+	}
+
+	return result
+}
+
+type BatchResultSendRecordRespDTO struct {
+	BatchNo	string
+	Total	int32
+	SuccessNum	int32
+}
+
+func DTOToPBBatchResultSendRecord(param *BatchResultSendRecordRespDTO)(result *pb.BatchResultSendRecordResponse) {
+	result = &pb.BatchResultSendRecordResponse{
+		BatchNo: param.BatchNo,
+		Total: param.Total,
+		SuccessNum: param.SuccessNum,
+	}
+
+	return result
+}
+
