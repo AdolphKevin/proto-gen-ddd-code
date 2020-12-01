@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package mc_sms;
+
+import "google/api/annotations.proto";
+
+service SmsRecordService {
+  // 消息发送数据统计接口
+  //@reqMetadata *orgcode
+  rpc BatchResultSendRecord (BatchResultSendRecordRequest) returns (BatchResultSendRecordResponse) {
+    option (google.api.http) = {
+      get: "/v1/xxx/batch_result"
+    };
+  }
+}
+
+message BatchResultSendRecordRequest {
+  // 批次号
+  string batch_no = 1;
+  // 测试数据
+  int64 message = 2;
+  int32 hello_world = 3;
+}
+
+message BatchResultSendRecordResponse {
+  //批次号
+  string batch_no = 1;
+  //发送总数
+  int32 total = 2;
+  //发送成功数量
+  int32 success_num = 3;
+}

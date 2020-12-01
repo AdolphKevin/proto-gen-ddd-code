@@ -1,0 +1,14 @@
+type SmsRecordServer struct {
+}
+
+func NewSmsRecordServer() *SmsRecordServer {
+	return &SmsRecordServer{}
+}
+
+// BatchResultSendRecord
+func (p *SmsRecordServer) BatchResultSendRecord(ctx context.Context,req *pb.BatchResultSendRecordRequest)(resp *pb.BatchResultSendRecordResponse,err error){
+	fmt.Printf("BatchResultSendRecord:%s\n",time.Now().Format(TIME_FORMAT))
+	resp = &pb.BatchResultSendRecordResponse{}
+	return resp,nil
+}
+

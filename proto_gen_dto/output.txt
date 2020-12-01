@@ -1,0 +1,6 @@
+type BatchResultSendRecordReqDTO struct {
+	BatchNo	string
+	Message	int64
+	HelloWorld	int32
+}
+
