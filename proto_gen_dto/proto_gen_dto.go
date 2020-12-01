@@ -80,14 +80,14 @@ func handler(file *os.File, content []string) {
 func requestToDTO(file *os.File, prefixName string, content []string) {
 	// generate dto struct
 	structName := prefixName + "ReqDTO"
-	util.FilePrintf(file, requestGenDTOStruct(structName,content))
+	util.FilePrintf(file, genRequestDTO(structName,content))
 
 	// generate pb to dto func
-	util.FilePrintf(file,requestGenPBToDTO(prefixName,content))
+	util.FilePrintf(file, genPBToDTO(prefixName,content))
 
 }
 
-func requestGenDTOStruct(structName string,content []string) string{
+func genRequestDTO(structName string,content []string) string{
 	var sb strings.Builder
 	sb.WriteString(fmt.Sprintf("type %s struct {\n", structName))
 	for i := 1; i+1 < len(content); i = i + 2 {
@@ -101,7 +101,7 @@ func requestGenDTOStruct(structName string,content []string) string{
 	return sb.String()
 }
 
-func requestGenPBToDTO(prefixName string,content []string) string{
+func genPBToDTO(prefixName string,content []string) string{
 	funcName := "PBToDTO"+prefixName
 	structName := prefixName + "ReqDTO"
 	pbStructName := prefixName+"Request"
@@ -126,7 +126,15 @@ func requestGenPBToDTO(prefixName string,content []string) string{
 }
 
 func dtoToResponse(prefixName string, content []string) {
-	//structName := prefixName + "RespDTO"
+
 	for i := 1; i < len(content); i++ {
 	}
+}
+
+func genResponseDTO(prefixName string,content []string){
+
+}
+
+func genDTOToPB(prefixName string,content []string){
+
 }
