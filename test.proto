@@ -20,6 +20,7 @@ message BatchResultSendRecordRequest {
   // 测试数据
   int64 message = 2;
   int32 hello_world = 3;
+  repeated int64 hello = 4;
 }
 
 message BatchResultSendRecordResponse {

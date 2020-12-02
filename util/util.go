@@ -27,7 +27,22 @@ func HandlerFiledName(field string) string {
 	return sb.String()
 }
 
-func TypeConvert(input string) string {
+func TypeConvert(input string) (result string) {
+	inputs := strings.Split(input, " ")
+
+	if len(inputs) <= 1 {
+		result = typeConvert(inputs[0])
+		return result
+	}
+	// 意味着有repeated 关键字
+	result = typeConvert(inputs[1])
+	if IsBaseType(result) {
+		result = "[]" + result
+	}
+	return result
+}
+
+func typeConvert(input string) string {
 	switch input {
 	case "int":
 		return "int32"
@@ -35,4 +50,26 @@ func TypeConvert(input string) string {
 		return "int64"
 	}
 	return input
+}
+
+func IsBaseType(input string) bool {
+	switch input {
+	case "int32":
+		return true
+	case "int64":
+		return true
+	case "uint32":
+		return true
+	case "uint64":
+		return true
+	case "float32":
+		return true
+	case "float64":
+		return true
+	case "bool":
+		return true
+	case "string":
+		return true
+	}
+	return false
 }

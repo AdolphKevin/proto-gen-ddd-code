@@ -2,6 +2,7 @@ type BatchResultSendRecordReqDTO struct {
 	BatchNo	string
 	Message	int64
 	HelloWorld	int32
+	Hello	[]int64
 }
 
 func PBToDTOBatchResultSendRecord(param *pb.BatchResultSendRecordRequest)(result *BatchResultSendRecordReqDTO) {
@@ -9,6 +10,7 @@ func PBToDTOBatchResultSendRecord(param *pb.BatchResultSendRecordRequest)(result
 		BatchNo: param.BatchNo,
 		Message: param.Message,
 		HelloWorld: param.HelloWorld,
+		Hello: param.Hello,
 	}
 
 	return result
