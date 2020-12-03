@@ -1,16 +1,22 @@
 type BatchResultSendRecordReqDTO struct {
-	BatchNo	string
-	Message	int64
-	HelloWorld	int32
-	Hello	[]int64
+	Name	string
+	Age	int64
+	Gender	int32
+	HelloWorld	[]int64
+	IsCommunist	bool
+	Address	*Address
+	SchoolInfos	[]*School
 }
 
 func PBToDTOBatchResultSendRecord(param *pb.BatchResultSendRecordRequest)(result *BatchResultSendRecordReqDTO) {
 	result = &BatchResultSendRecordReqDTO{
-		BatchNo: param.BatchNo,
-		Message: param.Message,
+		Name: param.Name,
+		Age: param.Age,
+		Gender: param.Gender,
 		HelloWorld: param.HelloWorld,
-		Hello: param.Hello,
+		IsCommunist: param.IsCommunist,
+		Address: param.Address,
+		SchoolInfos: param.SchoolInfos,
 	}
 
 	return result

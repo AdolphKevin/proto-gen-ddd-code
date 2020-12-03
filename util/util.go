@@ -31,13 +31,20 @@ func TypeConvert(input string) (result string) {
 	inputs := strings.Split(input, " ")
 
 	if len(inputs) <= 1 {
-		result = typeConvert(inputs[0])
+		if IsBaseType(inputs[0]) {
+			result = typeConvert(inputs[0])
+		} else {
+			result = "*" + typeConvert(inputs[0])
+		}
 		return result
 	}
-	// 意味着有repeated 关键字
+
+	// 意味着有repeated 关键字，需要转换成数组
 	result = typeConvert(inputs[1])
 	if IsBaseType(result) {
 		result = "[]" + result
+	} else {
+		result = "[]*" + result
 	}
 	return result
 }

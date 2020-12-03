@@ -15,12 +15,31 @@ service SmsRecordService {
 }
 
 message BatchResultSendRecordRequest {
-  // 批次号
-  string batch_no = 1;
-  // 测试数据
-  int64 message = 2;
-  int32 hello_world = 3;
-  repeated int64 hello = 4;
+  // base type
+  string name = 1;
+  int64 age = 2;
+  // 1:男,2:女,0:未知
+  int32 gender = 3;
+  repeated int64 hello_world = 4;
+  bool isCommunist = 5;
+  Address address = 6;
+  repeated School school_infos = 7;
+}
+
+message Address {
+  // 国家
+  string country = 1;
+  // 省
+  string province = 2;
+  // 市
+  string city = 3;
+}
+
+message School {
+  // 学校名
+  string name = 1;
+  // 专业
+  string special = 2;
 }
 
 message BatchResultSendRecordResponse {
@@ -30,4 +49,9 @@ message BatchResultSendRecordResponse {
   int32 total = 2;
   //发送成功数量
   int32 success_num = 3;
+}
+
+message Test {
+  string key = 1;
+  string value = 2;
 }
