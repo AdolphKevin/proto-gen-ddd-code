@@ -22,6 +22,60 @@ func PBToDTOBatchResultSendRecord(param *pb.BatchResultSendRecordRequest)(result
 	return result
 }
 
+type Address struct {
+	Country	string
+	Province	string
+	City	string
+}
+
+func PBToDTOAddress(param *pb.Address) (result *Address)
+	if param == nil {
+		 return nil
+	}
+	result = &Address{
+		Country: param.Country,
+		Province: param.Province,
+		City: param.City,
+	}
+	return result
+}
+
+func PBToDTOAddressSlice(pbList []*pb.Address) (dtoList []*Address)) {
+	dtoList = make([]*Address,0,len(pbList))
+	 for _, item := range pbList {
+		 poList = append(poList,PBToDTOAddress(item))
+	}
+	return dtoList
+}
+
+type School struct {
+	Name	string
+	Special	string
+	Test	*Test
+	TestRepeated	[]*Test
+}
+
+func PBToDTOSchool(param *pb.School) (result *School)
+	if param == nil {
+		 return nil
+	}
+	result = &School{
+		Name: param.Name,
+		Special: param.Special,
+		Test: PBToDTO(param.Test),
+		TestRepeated: PBToDTOSlice(param.TestRepeated),
+	}
+	return result
+}
+
+func PBToDTOSchoolSlice(pbList []*pb.School) (dtoList []*School)) {
+	dtoList = make([]*School,0,len(pbList))
+	 for _, item := range pbList {
+		 poList = append(poList,PBToDTOSchool(item))
+	}
+	return dtoList
+}
+
 type BatchResultSendRecordRespDTO struct {
 	BatchNo	string
 	Total	int32
@@ -36,5 +90,29 @@ func DTOToPBBatchResultSendRecord(param *BatchResultSendRecordRespDTO)(result *p
 	}
 
 	return result
+}
+
+type Test struct {
+	Key	string
+	Value	string
+}
+
+func PBToDTOTest(param *pb.Test) (result *Test)
+	if param == nil {
+		 return nil
+	}
+	result = &Test{
+		Key: param.Key,
+		Value: param.Value,
+	}
+	return result
+}
+
+func PBToDTOTestSlice(pbList []*pb.Test) (dtoList []*Test)) {
+	dtoList = make([]*Test,0,len(pbList))
+	 for _, item := range pbList {
+		 poList = append(poList,PBToDTOTest(item))
+	}
+	return dtoList
 }
 

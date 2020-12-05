@@ -74,20 +74,22 @@ func handler(file *os.File, content []string) {
 	if len(requestMatch) > 0 {
 		requestToDTO(file, requestMatch[1], content)
 	} else if len(responseMatch) > 0 {
-		dtoToResponse(file,responseMatch[1], content)
+		dtoToResponse(file, responseMatch[1], content)
+	} else {
+		util.FilePrintf(file, messageToStruct(content))
 	}
 }
 func requestToDTO(file *os.File, prefixName string, content []string) {
 	// generate dto struct
 	structName := prefixName + "ReqDTO"
-	util.FilePrintf(file, genRequestDTO(structName,content))
+	util.FilePrintf(file, genRequestDTO(structName, content))
 
 	// generate pb to dto func
-	util.FilePrintf(file, genPBToDTO(prefixName,content))
+	util.FilePrintf(file, genPBToDTO(prefixName, content))
 
 }
 
-func genRequestDTO(structName string,content []string) string{
+func genRequestDTO(structName string, content []string) string {
 	var sb strings.Builder
 	sb.WriteString(fmt.Sprintf("type %s struct {\n", structName))
 	for i := 1; i+1 < len(content); i = i + 2 {
@@ -101,44 +103,44 @@ func genRequestDTO(structName string,content []string) string{
 	return sb.String()
 }
 
-func genPBToDTO(prefixName string,content []string) string{
-	funcName := "PBToDTO"+prefixName
+func genPBToDTO(prefixName string, content []string) string {
+	funcName := "PBToDTO" + prefixName
 	structName := prefixName + "ReqDTO"
-	pbStructName := prefixName+"Request"
+	pbStructName := prefixName + "Request"
 	var sb strings.Builder
 	// func PBToDTOBatchResultSendRecord(param *pb.BatchResultSendRecordRequest)(result *BatchResultSendRecordReqDTO) {
-	sb.WriteString(fmt.Sprintf("func %s(param *pb.%s)(result *%s) {\n", funcName,pbStructName,structName))
+	sb.WriteString(fmt.Sprintf("func %s(param *pb.%s)(result *%s) {\n", funcName, pbStructName, structName))
 
 	// new dto
-	sb.WriteString(fmt.Sprintf("\tresult = &%s{\n",structName))
+	sb.WriteString(fmt.Sprintf("\tresult = &%s{\n", structName))
 	for i := 1; i+1 < len(content); i = i + 2 {
 		sb.WriteString("\t\t")
 		filedName := util.HandlerFiledName(content[i+1])
-		sb.WriteString(fmt.Sprintf("%s: param.%s,\n",filedName,filedName))
+		sb.WriteString(fmt.Sprintf("%s: param.%s,\n", filedName, filedName))
 	}
 	sb.WriteString("\t}\n\n")
 	// return dto
 	sb.WriteString("\treturn result\n")
 
 	sb.WriteString("}\n\n")
-	return  sb.String()
+	return sb.String()
 }
 
 func dtoToResponse(file *os.File, prefixName string, content []string) {
 	// generate response dto struct
-	util.FilePrintf(file,genResponseDTO(prefixName,content))
+	util.FilePrintf(file, genResponseDTO(prefixName, content))
 
 	// generate dto to pb func
-	util.FilePrintf(file,genDTOToPB(prefixName,content))
+	util.FilePrintf(file, genDTOToPB(prefixName, content))
 	return
 }
 
-func genResponseDTO(prefixName string,content []string) string{
+func genResponseDTO(prefixName string, content []string) string {
 	var sb strings.Builder
-	structName := prefixName +"RespDTO"
-	sb.WriteString(fmt.Sprintf("type %s struct {\n",structName))
+	structName := prefixName + "RespDTO"
+	sb.WriteString(fmt.Sprintf("type %s struct {\n", structName))
 
-	for i := 1; i+1 <len(content) ; i=i+2 {
+	for i := 1; i+1 < len(content); i = i + 2 {
 		sb.WriteString("\t")
 		sb.WriteString(util.HandlerFiledName(content[i+1]))
 		sb.WriteString("\t")
@@ -149,26 +151,26 @@ func genResponseDTO(prefixName string,content []string) string{
 	return sb.String()
 }
 
-func genDTOToPB(prefixName string,content []string) string{
-	funcName := "DTOToPB"+prefixName
+func genDTOToPB(prefixName string, content []string) string {
+	funcName := "DTOToPB" + prefixName
 	structName := prefixName + "RespDTO"
-	pbStructName := prefixName+"Response"
+	pbStructName := prefixName + "Response"
 
 	var sb strings.Builder
 	// func PBToDTOBatchResultSendRecord(param *pb.BatchResultSendRecordRequest)(result *BatchResultSendRecordReqDTO) {
-	sb.WriteString(fmt.Sprintf("func %s(param *%s)(result *pb.%s) {\n", funcName,structName,pbStructName))
+	sb.WriteString(fmt.Sprintf("func %s(param *%s)(result *pb.%s) {\n", funcName, structName, pbStructName))
 
 	// new pb result
-	sb.WriteString(fmt.Sprintf("\tresult = &pb.%s{\n",pbStructName))
+	sb.WriteString(fmt.Sprintf("\tresult = &pb.%s{\n", pbStructName))
 	for i := 1; i+1 < len(content); i = i + 2 {
 		sb.WriteString("\t\t")
 		filedName := util.HandlerFiledName(content[i+1])
-		sb.WriteString(fmt.Sprintf("%s: param.%s,\n",filedName,filedName))
+		sb.WriteString(fmt.Sprintf("%s: param.%s,\n", filedName, filedName))
 	}
 	sb.WriteString("\t}\n\n")
 	// return dto
 	sb.WriteString("\treturn result\n")
 
 	sb.WriteString("}\n\n")
-	return  sb.String()
+	return sb.String()
 }
