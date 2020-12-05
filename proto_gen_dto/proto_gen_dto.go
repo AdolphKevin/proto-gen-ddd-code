@@ -16,7 +16,7 @@ func GenDTO(inFilePath, outFilePath string) (err error) {
 	rMessage := regexp.MustCompile("message\\s+(\\w*)\\s+(.*)")
 	//   string batch_no =
 	// ==> string、 batch_no
-	rMessageContent := regexp.MustCompile("\\s+(.*)\\s+(.*)\\s+=")
+	rMessageContent := regexp.MustCompile("\\s+(\\w*)\\s+(\\w+)\\s*=")
 	rContentEnd := regexp.MustCompile("}")
 
 	file, err := os.Open(inFilePath)
