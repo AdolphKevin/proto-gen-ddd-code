@@ -13,10 +13,10 @@ import (
 func GenDTO(inFilePath, outFilePath string) (err error) {
 	// message BatchResultSendRecordRequest {
 	// ==> BatchResultSendRecordRequest、 {
-	rMessage := regexp.MustCompile("message\\s+(\\w*)\\s+(.*)")
+	rMessage := regexp.MustCompile("message\\s+(\\w+)\\s*{")
 	//   string batch_no =
 	// ==> string、 batch_no
-	rMessageContent := regexp.MustCompile("\\s+(\\w*)\\s+(\\w+)\\s*=")
+	rMessageContent := regexp.MustCompile("\\s+(\\w*\\s*\\w+)\\s+(\\w+)\\s*=")
 	rContentEnd := regexp.MustCompile("}")
 
 	file, err := os.Open(inFilePath)
@@ -40,8 +40,7 @@ func GenDTO(inFilePath, outFilePath string) (err error) {
 		messageContextMatch := rMessageContent.FindStringSubmatch(scanner.Text())
 		endMatch := rContentEnd.FindStringSubmatch(scanner.Text())
 		if len(messageMatch) > 0 {
-			// 当遇到"{"时，开始将内容放入slice中
-			//fmt.Println(messageMatch[1])
+			// 当遇到带"{"message时，开始将内容放入slice中
 			content = append(content, messageMatch[1])
 			// 标识开始
 			start = true

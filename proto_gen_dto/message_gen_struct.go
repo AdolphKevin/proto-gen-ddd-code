@@ -41,7 +41,7 @@ func definePBToDTO(content []string) string {
 	var sb strings.Builder
 	structName := content[0]
 
-	sb.WriteString(fmt.Sprintf("func PBToDTO%s(param *pb.%s) (result *%s)\n", structName, structName, structName))
+	sb.WriteString(fmt.Sprintf("func PBToDTO%s(param *pb.%s) (result *%s){\n", structName, structName, structName))
 	sb.WriteString("\tif param == nil {\n")
 	sb.WriteString("\t\t return nil\n")
 	sb.WriteString("\t}\n")
@@ -50,11 +50,14 @@ func definePBToDTO(content []string) string {
 		sb.WriteString("\t\t")
 		filedName := util.HandlerFiledName(content[i+1])
 		if filedType, ok := util.FiledMap[filedName]; ok {
+			typeName := filedType
+			typeName = strings.ReplaceAll(typeName, "*", "")
+			typeName = strings.ReplaceAll(typeName, "[]", "")
 			// 判断filedType是否为数组
 			if strings.Index(filedType, "[]") > -1 {
-				sb.WriteString(fmt.Sprintf("%s: PBToDTOSlice(param.%s),\n", filedName, filedName))
+				sb.WriteString(fmt.Sprintf("%s: PBToDTOSlice%s(param.%s),\n", filedName, typeName, filedName))
 			} else {
-				sb.WriteString(fmt.Sprintf("%s: PBToDTO(param.%s),\n", filedName, filedName))
+				sb.WriteString(fmt.Sprintf("%s: PBToDTO%s(param.%s),\n", filedName, typeName, filedName))
 			}
 		} else {
 			sb.WriteString(fmt.Sprintf("%s: param.%s,\n", filedName, filedName))
@@ -68,10 +71,10 @@ func definePBToDTO(content []string) string {
 
 func definePBToDTOSlice(structName string) string {
 	var sb strings.Builder
-	sb.WriteString(fmt.Sprintf("func PBToDTO%sSlice(pbList []*pb.%s) (dtoList []*%s)) {\n", structName, structName, structName))
+	sb.WriteString(fmt.Sprintf("func PBToDTOSlice%s(pbList []*pb.%s) (dtoList []*%s) {\n", structName, structName, structName))
 	sb.WriteString(fmt.Sprintf("\tdtoList = make([]*%s,0,len(pbList))\n", structName))
 	sb.WriteString("\t for _, item := range pbList {\n")
-	sb.WriteString(fmt.Sprintf("\t\t poList = append(poList,PBToDTO%s(item))\n", structName))
+	sb.WriteString(fmt.Sprintf("\t\t dtoList = append(dtoList,PBToDTO%s(item))\n", structName))
 	sb.WriteString("\t}\n")
 	sb.WriteString("\treturn dtoList\n")
 	sb.WriteString("}\n\n")
