@@ -2,16 +2,19 @@ package proto_gen_server
 
 import (
 	"bufio"
-	"github.com/AdolphKevin/proto-gen-ddd-code/util"
 	"os"
 	"regexp"
+	"strings"
+
+	"github.com/AdolphKevin/proto-gen-ddd-code/util"
 )
 
 func GenServer(inFilePath string, outFilePath string) (err error) {
 	// service SmsRecordService {
-	rService := regexp.MustCompile("service\\s+(.*)Service\\s+")
+	rService := regexp.MustCompile("service\\s*(\\w*)Service\\s+")
 	// rpc BatchResultSendRecord (BatchResultSendRecordRequest) returns (BatchResultSendRecordResponse) {
-	rRpcMethod := regexp.MustCompile("rpc\\s+(\\S+)\\s+\\((.*)\\)\\s+returns\\s+\\((.*)\\)")
+	// rpc MenuConditionList(common.Request) returns (MenuConditionListResponse) {
+	rRpcMethod := regexp.MustCompile("rpc\\s+(\\w+)\\s*\\((\\S+)\\)\\s*returns\\s*\\((\\S*)\\)")
 
 	file, err := os.Open(inFilePath)
 	if err != nil {
@@ -48,9 +51,21 @@ func GenServer(inFilePath string, outFilePath string) (err error) {
 		if len(rpcMatch) > 0 {
 			// rpc to func
 			util.FilePrintf(f, "// %s\n", rpcMatch[1])
-			util.FilePrintf(f, "func (p *%s) %s(ctx context.Context,req *pb.%s)(resp *pb.%s,err error){\n", serverName, rpcMatch[1], rpcMatch[2], rpcMatch[3])
-			util.FilePrintf(f, "\tfmt.Printf(\"%s:%%s\\n\",time.Now().Format(TIME_FORMAT))\n", rpcMatch[1])
-			util.FilePrintf(f, "\tresp = &pb.%s{}\n", rpcMatch[3])
+			// request is common.Request
+			if strings.Index(rpcMatch[2], "common") > -1 {
+				util.FilePrintf(f, "func (p *%s) %s(ctx context.Context,req *%s)", serverName, rpcMatch[1], rpcMatch[2])
+			} else {
+				util.FilePrintf(f, "func (p *%s) %s(ctx context.Context,req *pb.%s)", serverName, rpcMatch[1], rpcMatch[2])
+			}
+
+			// response is common.Response
+			if strings.Index(rpcMatch[3], "common") > -1 {
+				util.FilePrintf(f, "(resp *%s,err error){\n", rpcMatch[3])
+				util.FilePrintf(f, "\tresp = &%s{}\n", rpcMatch[3])
+			} else {
+				util.FilePrintf(f, "(resp *pb.%s,err error){\n", rpcMatch[3])
+				util.FilePrintf(f, "\tresp = &pb.%s{}\n", rpcMatch[3])
+			}
 			util.FilePrintf(f, "\treturn resp,nil\n")
 			util.FilePrintf(f, "}\n\n")
 		}
