@@ -32,7 +32,6 @@ func HandlerFiledName(field string) string {
 
 func TypeConvert(input string) (result string) {
 	inputs := strings.Split(input, " ")
-	fmt.Println(input)
 	if len(inputs) <= 1 {
 		result = inputs[0]
 		if !IsBaseType(inputs[0]) {

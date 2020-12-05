@@ -6,8 +6,9 @@ proto generate golang code
 
 可`go run main.go`或者执行对应的单元测试。
 
-## 局限
-
-PB与DTO的互相转换，暂时只支持Request/Response结尾的message结构体。
-
-结构体内嵌套结构体，暂不支持。
+## 功能
+- [x] PB生成server层，实现proto接口
+- [x] PB转换为DTO
+- [x] 支持PB内的message内嵌套message
+- [x] 支持PB的repeated关键字转换
+- [ ] 支持PB内定义的enum类型 
