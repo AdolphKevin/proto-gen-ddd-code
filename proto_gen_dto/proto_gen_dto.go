@@ -75,7 +75,8 @@ func handler(file *os.File, content []string) {
 	} else if len(responseMatch) > 0 {
 		dtoToResponse(file, responseMatch[1], content)
 	} else {
-		util.FilePrintf(file, messageToStruct(content))
+		translation := NewTranslation(content)
+		util.FilePrintf(file, translation.MessageToStruct())
 	}
 }
 func requestToDTO(file *os.File, prefixName string, content []string) {
@@ -115,7 +116,19 @@ func genPBToDTO(prefixName string, content []string) string {
 	for i := 1; i+1 < len(content); i = i + 2 {
 		sb.WriteString("\t\t")
 		filedName := util.HandlerFiledName(content[i+1])
-		sb.WriteString(fmt.Sprintf("%s: param.%s,\n", filedName, filedName))
+		if filedType, ok := util.FiledMap[filedName]; ok {
+			typeName := filedType
+			typeName = strings.ReplaceAll(typeName, "*", "")
+			typeName = strings.ReplaceAll(typeName, "[]", "")
+			// 判断filedType是否为数组
+			if strings.Index(filedType, "[]") > -1 {
+				sb.WriteString(fmt.Sprintf("%s: PBToDTO%sSlice(param.%s),\n", filedName, typeName, filedName))
+			} else {
+				sb.WriteString(fmt.Sprintf("%s: PBToDTO%s(param.%s),\n", filedName, typeName, filedName))
+			}
+		} else {
+			sb.WriteString(fmt.Sprintf("%s: param.%s,\n", filedName, filedName))
+		}
 	}
 	sb.WriteString("\t}\n\n")
 	// return dto
@@ -164,7 +177,19 @@ func genDTOToPB(prefixName string, content []string) string {
 	for i := 1; i+1 < len(content); i = i + 2 {
 		sb.WriteString("\t\t")
 		filedName := util.HandlerFiledName(content[i+1])
-		sb.WriteString(fmt.Sprintf("%s: param.%s,\n", filedName, filedName))
+		if filedType, ok := util.FiledMap[filedName]; ok {
+			typeName := filedType
+			typeName = strings.ReplaceAll(typeName, "*", "")
+			typeName = strings.ReplaceAll(typeName, "[]", "")
+			// 判断filedType是否为数组
+			if strings.Index(filedType, "[]") > -1 {
+				sb.WriteString(fmt.Sprintf("%s: DTOToPB%sSlice(param.%s),\n", filedName, typeName, filedName))
+			} else {
+				sb.WriteString(fmt.Sprintf("%s: DTOToPB%s(param.%s),\n", filedName, typeName, filedName))
+			}
+		} else {
+			sb.WriteString(fmt.Sprintf("%s: param.%s,\n", filedName, filedName))
+		}
 	}
 	sb.WriteString("\t}\n\n")
 	// return dto
