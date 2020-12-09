@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package example;
+
+import "google/api/annotations.proto";
+import "common/common.proto";
+
+service ExampleService {
+  // 示例
+  rpc Example (ExampleRequest) returns (ExampleResponse) {
+    option (google.api.http) = {
+      post : "/v1/example"
+      body : "*"
+    };
+  }
+
+  // 示例2：外部proto.common包的service
+  rpc ExampleCommon (common.Request) returns (common.Response) {
+    option (google.api.http) = {
+      post : "/v2/example"
+      body : "*"
+    };
+  }
+
+}
+
+message ExampleRequest {
+  string example_string = 1;
+  int64 example_int64 = 2;
+  int32 example_int32 = 3;
+  double example_float64 = 4; // Float64
+  float example_float32 = 5; // Float32
+  uint32 example_uint32 = 6;
+  uint64 example_uint64 = 7;
+  bool example_bool = 8;
+  Example example = 9;
+  repeated Example example_repeated = 10;
+}
+
+message ExampleResponse {
+  int64 errCode = 1;
+  string errMsg = 2;
+}
+
+message Example {
+  string key = 1;
+  string value = 2;
+}
