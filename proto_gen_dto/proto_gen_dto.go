@@ -104,7 +104,7 @@ func genRequestDTO(structName string, content []string) string {
 }
 
 func genPBToDTO(prefixName string, content []string) string {
-	funcName := "PBToDTO" + prefixName
+	funcName := "PBToDTO" + prefixName + "Request"
 	structName := prefixName + "ReqDTO"
 	pbStructName := prefixName + "Request"
 	var sb strings.Builder
@@ -164,7 +164,7 @@ func genResponseDTO(prefixName string, content []string) string {
 }
 
 func genDTOToPB(prefixName string, content []string) string {
-	funcName := "DTOToPB" + prefixName
+	funcName := "DTOToPB" + prefixName + "Response"
 	structName := prefixName + "RespDTO"
 	pbStructName := prefixName + "Response"
 

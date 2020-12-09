@@ -33,7 +33,7 @@ func HandlerFiledName(field string) string {
 func TypeConvert(input string) (result string) {
 	inputs := strings.Split(input, " ")
 	if len(inputs) <= 1 {
-		result = inputs[0]
+		result = typeConvert(inputs[0])
 		if !IsBaseType(inputs[0]) {
 			result = "*" + result
 			MessageMap[result] = struct{}{}
@@ -42,7 +42,7 @@ func TypeConvert(input string) (result string) {
 	}
 
 	// 意味着有repeated 关键字，需要转换成数组
-	result = inputs[1]
+	result = typeConvert(inputs[1])
 	if IsBaseType(result) {
 		result = "[]" + result
 	} else {
@@ -62,9 +62,9 @@ func IsBaseType(input string) bool {
 		return true
 	case "uint64":
 		return true
-	case "float32":
+	case "float":
 		return true
-	case "float64":
+	case "double":
 		return true
 	case "bool":
 		return true
@@ -72,4 +72,14 @@ func IsBaseType(input string) bool {
 		return true
 	}
 	return false
+}
+
+func typeConvert(input string) string {
+	switch input {
+	case "double":
+		return "float64"
+	case "float":
+		return "float32"
+	}
+	return input
 }
