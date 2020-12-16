@@ -1,14 +1,19 @@
-type SmsRecordServer struct {
+type ExampleServer struct {
 }
 
-func NewSmsRecordServer() *SmsRecordServer {
-	return &SmsRecordServer{}
+func NewExampleServer() *ExampleServer {
+	return &ExampleServer{}
 }
 
-// BatchResultSendRecord
-func (p *SmsRecordServer) BatchResultSendRecord(ctx context.Context,req *pb.BatchResultSendRecordRequest)(resp *pb.BatchResultSendRecordResponse,err error){
-	fmt.Printf("BatchResultSendRecord:%s\n",time.Now().Format(TIME_FORMAT))
-	resp = &pb.BatchResultSendRecordResponse{}
+// Example
+func (p *ExampleServer) Example(ctx context.Context,req *pb.ExampleRequest)(resp *pb.ExampleResponse,err error){
+	resp = &pb.ExampleResponse{}
+	return resp,nil
+}
+
+// ExampleCommon
+func (p *ExampleServer) ExampleCommon(ctx context.Context,req *common.Request)(resp *common.Response,err error){
+	resp = &common.Response{}
 	return resp,nil
 }
 
