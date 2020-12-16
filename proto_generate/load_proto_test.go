@@ -6,7 +6,7 @@ import (
 )
 
 func TestLoadMessage(t *testing.T) {
-	dataList, _, err := Load("../example.proto")
+	dataList, err := Load("../example.proto")
 	if err != nil {
 		return
 	}

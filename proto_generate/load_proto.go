@@ -9,23 +9,9 @@ import (
 	"github.com/AdolphKevin/proto-gen-ddd-code/util"
 )
 
-type PBField struct {
-	Name       string
-	Type       string
-	IsSlice    bool
-	IsBaseType bool
-}
-
-type PBData struct {
-	Name   string
-	PBType int
-	Fields []*PBField
-}
-
-func Load(inFilePath string) (dataList []*PBData, dataMap map[string]*PBData, err error) {
-	dataList = make([]*PBData, 0)
-	dataMap = make(map[string]*PBData)
-	var pbData = &PBData{}
+func Load(inFilePath string) (dataList []*PBMessage, err error) {
+	dataList = make([]*PBMessage, 0)
+	var pbData = &PBMessage{}
 
 	rMessage := regexp.MustCompile("message\\s+(\\w+)\\s*{")
 	rMessageContent := regexp.MustCompile("\\s+(\\w*\\s*\\w+)\\s+(\\w+)\\s*=")
@@ -40,6 +26,7 @@ func Load(inFilePath string) (dataList []*PBData, dataMap map[string]*PBData, er
 	scanner := bufio.NewScanner(file)
 	start := false
 	for scanner.Scan() {
+		// ====================  read message start====================
 		messageMatch := rMessage.FindStringSubmatch(scanner.Text())
 		messageContextMatch := rMessageContent.FindStringSubmatch(scanner.Text())
 		endMatch := rContentEnd.FindStringSubmatch(scanner.Text())
@@ -48,7 +35,7 @@ func Load(inFilePath string) (dataList []*PBData, dataMap map[string]*PBData, er
 			start = true
 			// get message type
 			messageType := getMessageType(messageMatch[1])
-			pbData = &PBData{Name: messageMatch[1], PBType: messageType}
+			pbData = &PBMessage{Name: messageMatch[1], PBType: messageType}
 
 			continue
 		}
@@ -69,11 +56,10 @@ func Load(inFilePath string) (dataList []*PBData, dataMap map[string]*PBData, er
 
 			// 将message添加到List
 			dataList = append(dataList, pbData)
-			// 并且建立message Name与字段的映射
-			dataMap[pbData.Name] = pbData
 
 			continue
 		}
+		// ====================  read message end====================
 	}
 	return
 }

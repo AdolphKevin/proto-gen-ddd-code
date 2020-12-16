@@ -8,33 +8,46 @@ import (
 	"github.com/AdolphKevin/proto-gen-ddd-code/util"
 )
 
-var dualWaySlice strings.Builder
+type PBMessage struct {
+	Name   string
+	PBType int        // PBType用于区分是为普通的message类型还是带了request/response尾缀的message
+	Fields []*PBField // message中包含的字段
+}
 
-func GenDTO(dataList []*PBData, dataMap map[string]*PBData, outFilePath string) (err error) {
+type PBField struct {
+	Name       string // 字段名
+	Type       string // 字段类型
+	IsSlice    bool   // 字段是否为repeated数组
+	IsBaseType bool   // 字段是否为go语言的基础类型
+}
+
+func GenDTO(dataList []*PBMessage, outFilePath string) (err error) {
 	f, err := os.Create(outFilePath)
 	if err != nil {
 		return err
 	}
 	defer f.Close()
 
+	var dualWaySlice strings.Builder
+
 	for _, data := range dataList {
 		dualWaySlice.Reset()
-		util.FilePrintf(f, DualWayMessage(data))
+		util.FilePrintf(f, DualWayMessage(data, dualWaySlice))
 		util.FilePrintf(f, dualWaySlice.String())
 	}
 	return
 }
 
 // bilateral message and dto by PB file
-func DualWayMessage(pbData *PBData) (result string) {
+func DualWayMessage(pbData *PBMessage, dualWaySlice strings.Builder) (result string) {
 	var sb strings.Builder
 	sb.WriteString(defineStruct(pbData))
-	sb.WriteString(definePBToDTO(pbData))
-	sb.WriteString(defineDTOToPB(pbData))
+	sb.WriteString(definePBToDTO(pbData, dualWaySlice))
+	sb.WriteString(defineDTOToPB(pbData, dualWaySlice))
 	return sb.String()
 }
 
-func defineStruct(pbData *PBData) (result string) {
+func defineStruct(pbData *PBMessage) (result string) {
 	var sb strings.Builder
 	switch pbData.PBType {
 	case util.MessageType:
@@ -65,7 +78,7 @@ func defineStruct(pbData *PBData) (result string) {
 	return sb.String()
 }
 
-func definePBToDTO(pbData *PBData) (result string) {
+func definePBToDTO(pbData *PBMessage, dualWaySlice strings.Builder) (result string) {
 	var sb strings.Builder
 	var resultName = pbData.Name
 	switch pbData.PBType {
@@ -100,7 +113,7 @@ func definePBToDTO(pbData *PBData) (result string) {
 	return sb.String()
 }
 
-func defineDTOToPB(pbData *PBData) (result string) {
+func defineDTOToPB(pbData *PBMessage, dualWaySlice strings.Builder) (result string) {
 	var sb strings.Builder
 	var paramName = pbData.Name
 	switch pbData.PBType {

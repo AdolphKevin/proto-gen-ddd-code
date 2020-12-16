@@ -18,11 +18,11 @@ func main() {
 		return
 	}
 
-	dataList, dataMap, err := proto_generate.Load(protoPath)
+	dataList, err := proto_generate.Load(protoPath)
 	if err != nil {
 		return
 	}
-	err = proto_generate.GenDTO(dataList, dataMap, genDtoPath)
+	err = proto_generate.GenDTO(dataList, genDtoPath)
 	if err != nil {
 		fmt.Println(err)
 		return
