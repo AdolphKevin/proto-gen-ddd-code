@@ -7,9 +7,6 @@ import (
 	"strings"
 )
 
-var MessageMap = make(map[string]struct{}) // is message type
-var FiledMap = make(map[string]string)     // golang struct filedName mapping filedType
-
 func FilePrintf(f *os.File, format string, a ...interface{}) {
 	_, _ = io.WriteString(f, fmt.Sprintf(format, a...))
 }
