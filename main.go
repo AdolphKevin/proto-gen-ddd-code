@@ -3,7 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/AdolphKevin/proto-gen-ddd-code/proto_gen_dto"
+	"github.com/AdolphKevin/proto-gen-ddd-code/proto_generate"
+
 	"github.com/AdolphKevin/proto-gen-ddd-code/proto_gen_server"
 )
 
@@ -17,7 +18,11 @@ func main() {
 		return
 	}
 
-	err = proto_gen_dto.GenDTO(protoPath, genDtoPath)
+	dataList, dataMap, err := proto_generate.Load(protoPath)
+	if err != nil {
+		return
+	}
+	err = proto_generate.GenDTO(dataList, dataMap, genDtoPath)
 	if err != nil {
 		fmt.Println(err)
 		return
