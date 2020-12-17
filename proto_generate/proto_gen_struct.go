@@ -8,19 +8,6 @@ import (
 	"github.com/AdolphKevin/proto-gen-ddd-code/util"
 )
 
-type PBMessage struct {
-	Name   string
-	PBType int        // PBType用于区分是为普通的message类型还是带了request/response尾缀的message
-	Fields []*PBField // message中包含的字段
-}
-
-type PBField struct {
-	Name       string // 字段名
-	Type       string // 字段类型
-	IsSlice    bool   // 字段是否为repeated数组
-	IsBaseType bool   // 字段是否为go语言的基础类型
-}
-
 func GenDTO(dataList []*PBMessage, outFilePath string) (err error) {
 	f, err := os.Create(outFilePath)
 	if err != nil {
@@ -71,7 +58,8 @@ func defineStruct(pbData *PBMessage) (result string) {
 				sb.WriteString("*" + field.Type)
 			}
 		}
-
+		sb.WriteString(fmt.Sprintf("\t `json:\"%s\"`", field.Name))
+		sb.WriteString(fmt.Sprintf("\t // %s", field.Comment))
 		sb.WriteString("\n")
 	}
 	sb.WriteString(fmt.Sprintf("}\n\n"))

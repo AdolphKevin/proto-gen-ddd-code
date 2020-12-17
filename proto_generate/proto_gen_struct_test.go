@@ -8,7 +8,7 @@ func TestGenDTO(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	err = GenDTO(dataList, "./out.txt")
+	err = GenDTO(dataList, "../gen_result/dto.txt")
 	if err != nil {
 		t.Error(err)
 		return
