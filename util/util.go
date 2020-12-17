@@ -27,6 +27,7 @@ func HandlerFiledName(field string) string {
 	return sb.String()
 }
 
+// 是否为Golang的基本类型
 func IsBaseType(input string) bool {
 	switch input {
 	case "int32":

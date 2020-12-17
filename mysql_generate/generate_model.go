@@ -61,6 +61,10 @@ func definePOToDO(table *SQLTable) (result string) {
 	sb.WriteString(fmt.Sprintf("\tdo = &Do%s{\n", poName))
 	for _, field := range table.Fields {
 		fieldName := util.HandlerFiledName(field.Name)
+		if fieldName == "Id" {
+			sb.WriteString(fmt.Sprintf("\t\t%s:\tpo.ID,\n", fieldName))
+			continue
+		}
 		sb.WriteString(fmt.Sprintf("\t\t%s:\tpo.%s,\n", fieldName, fieldName))
 	}
 	sb.WriteString("\t}\n")
@@ -90,6 +94,10 @@ func defineDOToPO(table *SQLTable) (result string) {
 			continue
 		}
 		fieldName := util.HandlerFiledName(field.Name)
+		if fieldName == "Id" {
+			sb.WriteString(fmt.Sprintf("\tpo.ID = do.%s\n", fieldName))
+			continue
+		}
 		sb.WriteString(fmt.Sprintf("\tpo.%s = do.%s\n", fieldName, fieldName))
 	}
 	sb.WriteString("\treturn po\n")
