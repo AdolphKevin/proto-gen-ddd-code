@@ -9,7 +9,7 @@ func TestGenerate(t *testing.T) {
 		return
 	}
 
-	err = Generate(tables)
+	err = GenModel(tables, "../gen_result/mysql_model")
 	if err != nil {
 		t.Error(err)
 		return

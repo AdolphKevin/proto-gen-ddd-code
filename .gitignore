@@ -28,6 +28,7 @@ deploypkg/*
 .DS_Store
 .vscode
 debug
+gen_result/
 
 # 其他忽略
 

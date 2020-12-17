@@ -8,9 +8,9 @@ import (
 	"github.com/AdolphKevin/proto-gen-ddd-code/util"
 )
 
-func Generate(tables []*SQLTable) error {
+func GenModel(tables []*SQLTable, outFilePath string) error {
 	for _, table := range tables {
-		filePath := fmt.Sprintf("../gen_result/mysql_model/%s.txt", table.Name)
+		filePath := fmt.Sprintf("%s/%s.txt", outFilePath, table.Name)
 
 		f, err := os.Create(filePath)
 		if err != nil {
