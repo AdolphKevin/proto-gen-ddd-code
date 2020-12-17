@@ -8,18 +8,6 @@
 _obj
 _test
 
-# Architecture specific extensions/prefixes
-*.[568vq]
-[568vq].out
-
-*.cgo1.go
-*.cgo2.c
-_cgo_defun.c
-_cgo_gotypes.go
-_cgo_export.*
-
-_testmain.go
-
 *.exe
 *.test
 *.prof
@@ -28,7 +16,7 @@ deploypkg/*
 .DS_Store
 .vscode
 debug
-gen_result/
+*.txt
 
 # 其他忽略
 
