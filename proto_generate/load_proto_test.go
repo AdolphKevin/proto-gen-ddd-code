@@ -1,7 +1,6 @@
 package proto_generate
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -12,10 +11,10 @@ func TestLoadMessage(t *testing.T) {
 	}
 	// print dataList
 	for _, data := range dataList {
-		fmt.Printf("name : %#v,\t PBType: %v\n", data.Name, data.PBType)
+		t.Logf("name : %#v,\t PBType: %v\n", data.Name, data.PBType)
 		for _, filed := range data.Fields {
-			fmt.Printf("Name:%v,\tType:%v,\tisSlice :%v,\tisBaseType:%v\n", filed.Name, filed.Type, filed.IsSlice, filed.IsBaseType)
+			t.Logf("Name:%v,\tType:%v,\tisSlice :%v,\tisBaseType:%v,\tComment :%s ,\t isRequired :%v \n", filed.Name, filed.Type, filed.IsSlice, filed.IsBaseType, filed.Comment, filed.IsRequired)
 		}
-		fmt.Println()
+		t.Log()
 	}
 }

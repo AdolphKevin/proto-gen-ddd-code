@@ -25,11 +25,15 @@ service ExampleService {
 }
 
 message ExampleRequest {
+  // 示例，自动生成必填验证
+  // @required
   string example_string = 1;
   int64 example_int64 = 2;
   int32 example_int32 = 3;
-  double example_float64 = 4; // Float64
-  float example_float32 = 5; // Float32
+  // Float64
+  double example_float64 = 4;
+  // Float32
+  float example_float32 = 5;
   uint32 example_uint32 = 6;
   uint64 example_uint64 = 7;
   bool example_bool = 8;
