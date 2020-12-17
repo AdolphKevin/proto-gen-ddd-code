@@ -8,6 +8,19 @@ import (
 	"github.com/AdolphKevin/proto-gen-ddd-code/util"
 )
 
+var verifyMap = map[string]func(field string) string{}
+
+func init() {
+	verifyMap["interface"] = verifyInterface
+	verifyMap["string"] = verifyString
+	verifyMap["int64"] = verifyInt
+	verifyMap["int32"] = verifyInt
+	verifyMap["uint32"] = verifyInt
+	verifyMap["uint64"] = verifyInt
+	verifyMap["float64"] = verifyInt
+	verifyMap["float32"] = verifyInt
+}
+
 func GenDTO(dataList []*PBMessage, outFilePath string) (err error) {
 	f, err := os.Create(outFilePath)
 	if err != nil {
@@ -50,7 +63,7 @@ func defineStruct(pbData *PBMessage) (result string) {
 		sb.WriteString(util.HandlerFiledName(field.Name))
 		sb.WriteString("\t")
 		if field.IsBaseType {
-			sb.WriteString(util.TypeConvert(field.Type))
+			sb.WriteString(field.Type)
 		} else {
 			if field.IsSlice {
 				sb.WriteString("[]*" + field.Type)
@@ -75,10 +88,24 @@ func definePBToDTO(pbData *PBMessage, dualWaySlice strings.Builder) (result stri
 	case util.ResponseType:
 		return ""
 	}
-	sb.WriteString(fmt.Sprintf("func PBToDTO%s(param *pb.%s) (result *%s){\n", pbData.Name, pbData.Name, resultName))
+	sb.WriteString(fmt.Sprintf("func PBToDTO%s(param *pb.%s) (result *%s,err error){\n", pbData.Name, pbData.Name, resultName))
 	sb.WriteString("\tif param == nil {\n")
-	sb.WriteString("\t\t return nil\n")
+	sb.WriteString("\t\t return nil,errors.New(\"param is nil\")\n")
 	sb.WriteString("\t}\n")
+
+	// required param valid
+	for _, field := range pbData.Fields {
+		if !field.IsRequired {
+			continue
+		}
+		fieldName := util.HandlerFiledName(field.Name)
+		if field.IsBaseType {
+			sb.WriteString(verifyMap[field.Type](fieldName))
+		} else {
+			sb.WriteString(verifyMap["interface"](fieldName))
+		}
+	}
+	// pb to dto
 	sb.WriteString(fmt.Sprintf("\tresult = &%s{\n", resultName))
 	for _, field := range pbData.Fields {
 		sb.WriteString("\t\t")
@@ -158,5 +185,29 @@ func defineDTOToPBSlice(name string) string {
 	sb.WriteString("\t}\n")
 	sb.WriteString("\treturn pbList\n")
 	sb.WriteString("}\n\n")
+	return sb.String()
+}
+
+func verifyString(field string) string {
+	var sb strings.Builder
+	sb.WriteString(fmt.Sprintf("\tif param.%s == \"\" { \n", field))
+	sb.WriteString(fmt.Sprintf("\t\t return nil,errors.New(\"%s is empty\")\n", field))
+	sb.WriteString("\t}\n")
+	return sb.String()
+}
+
+func verifyInt(field string) string {
+	var sb strings.Builder
+	sb.WriteString(fmt.Sprintf("\tif param.%s <= 0 { \n", field))
+	sb.WriteString(fmt.Sprintf("\t\t return nil,errors.New(\"%s must large than 0\")\n", field))
+	sb.WriteString("\t}\n")
+	return sb.String()
+}
+
+func verifyInterface(field string) string {
+	var sb strings.Builder
+	sb.WriteString(fmt.Sprintf("\tif param.%s == nil { \n", field))
+	sb.WriteString(fmt.Sprintf("\t\t return nil,errors.New(\"%s is nil\")\n", field))
+	sb.WriteString("\t}\n")
 	return sb.String()
 }

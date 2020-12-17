@@ -38,9 +38,9 @@ func IsBaseType(input string) bool {
 		return true
 	case "uint64":
 		return true
-	case "float":
+	case "float64":
 		return true
-	case "double":
+	case "float32":
 		return true
 	case "bool":
 		return true

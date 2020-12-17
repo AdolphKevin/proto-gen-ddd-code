@@ -28,9 +28,12 @@ message ExampleRequest {
   // 示例，自动生成必填验证
   // @required
   string example_string = 1;
+  // @required
   int64 example_int64 = 2;
+  // @required
   int32 example_int32 = 3;
   // Float64
+  // @required
   double example_float64 = 4;
   // Float32
   float example_float32 = 5;

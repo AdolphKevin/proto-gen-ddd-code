@@ -89,9 +89,9 @@ func Load(inFilePath string) (dataList []*PBMessage, err error) {
 			types := strings.Split(messageContextMatch[1], " ")
 			if len(types) > 1 {
 				field.IsSlice = true
-				field.Type = types[1]
+				field.Type = util.TypeConvert(types[1])
 			} else {
-				field.Type = types[0]
+				field.Type = util.TypeConvert(types[0])
 			}
 
 			field.IsBaseType = util.IsBaseType(field.Type)
