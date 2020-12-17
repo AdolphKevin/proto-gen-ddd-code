@@ -7,9 +7,10 @@ import (
 )
 
 type SQLField struct {
-	Name    string // 字段名
-	Type    string // 字段类型
-	Comment string // 字段描述
+	Name        string // 字段名
+	Type        string // 字段类型
+	Comment     string // 字段描述
+	isBaseFiled bool   // 是否为基础字段
 }
 
 type SQLTable struct {
@@ -43,14 +44,14 @@ func Load(inFilePath string) (tables []*SQLTable, err error) {
 			continue
 		}
 		if len(fieldMatch) > 0 {
-			if isBaseField(fieldMatch[1]) {
-				continue
-			}
-
 			field := &SQLField{
 				Name:    fieldMatch[1],
 				Type:    typeConvert(fieldMatch[2]),
 				Comment: fieldMatch[3],
+			}
+
+			if isBaseField(fieldMatch[1]) {
+				field.isBaseFiled = true
 			}
 
 			table.Fields = append(table.Fields, field)
