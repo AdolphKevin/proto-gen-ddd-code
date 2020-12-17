@@ -40,6 +40,7 @@ message ExampleRequest {
   uint32 example_uint32 = 6;
   uint64 example_uint64 = 7;
   bool example_bool = 8;
+  // @required
   Example example = 9;
   repeated Example example_repeated = 10;
 }
