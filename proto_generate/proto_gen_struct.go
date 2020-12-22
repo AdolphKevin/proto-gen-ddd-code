@@ -122,7 +122,7 @@ func definePBToDTO(pbData *PBMessage, dualWaySlice strings.Builder) (result stri
 		}
 	}
 	sb.WriteString("\t}\n")
-	sb.WriteString("\treturn result\n")
+	sb.WriteString("\treturn result,nil\n")
 	sb.WriteString("}\n\n")
 
 	return sb.String()
