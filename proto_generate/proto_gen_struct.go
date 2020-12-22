@@ -98,11 +98,10 @@ func definePBToDTO(pbData *PBMessage, dualWaySlice strings.Builder) (result stri
 		if !field.IsRequired {
 			continue
 		}
-		fieldName := util.HandlerFiledName(field.Name)
 		if field.IsBaseType {
-			sb.WriteString(verifyMap[field.Type](fieldName))
+			sb.WriteString(verifyMap[field.Type](field.Name))
 		} else {
-			sb.WriteString(verifyMap["interface"](fieldName))
+			sb.WriteString(verifyMap["interface"](field.Name))
 		}
 	}
 	// pb to dto
