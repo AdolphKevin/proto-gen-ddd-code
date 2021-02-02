@@ -21,3 +21,8 @@ proto generate golang code
 
 ## 后续升级方向
 - [ ] 根据MySQL的建表语句，生成简单的CRUD方法
+
+## 待完善
+- [ ] message的request/response类型内的repeated类型，没有自动生成Slice函数
+- [ ] request/response结构名命名有些冗余。需调整为ReqDTO/RespDTO
+- [ ] proto中，每个rpc方法的request、response以及依赖的message结构，生成在一个dto文件夹内，便于复制。

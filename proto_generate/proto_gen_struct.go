@@ -189,7 +189,8 @@ func defineDTOToPBSlice(name string) string {
 
 func verifyString(field string) string {
 	var sb strings.Builder
-	sb.WriteString(fmt.Sprintf("\tif param.%s == \"\" { \n", field))
+	fieldName := util.HandlerFiledName(field)
+	sb.WriteString(fmt.Sprintf("\tif param.%s == \"\" { \n", fieldName))
 	sb.WriteString(fmt.Sprintf("\t\t return nil,errors.New(\"%s is empty\")\n", field))
 	sb.WriteString("\t}\n")
 	return sb.String()
@@ -197,15 +198,17 @@ func verifyString(field string) string {
 
 func verifyInt(field string) string {
 	var sb strings.Builder
-	sb.WriteString(fmt.Sprintf("\tif param.%s <= 0 { \n", field))
-	sb.WriteString(fmt.Sprintf("\t\t return nil,errors.New(\"%s must large than 0\")\n", field))
+	fieldName := util.HandlerFiledName(field)
+	sb.WriteString(fmt.Sprintf("\tif param.%s <= 0 { \n", fieldName))
+	sb.WriteString(fmt.Sprintf("\t\t return nil,errors.New(\"%s must be large than 0\")\n", field))
 	sb.WriteString("\t}\n")
 	return sb.String()
 }
 
 func verifyInterface(field string) string {
 	var sb strings.Builder
-	sb.WriteString(fmt.Sprintf("\tif param.%s == nil { \n", field))
+	fieldName := util.HandlerFiledName(field)
+	sb.WriteString(fmt.Sprintf("\tif param.%s == nil { \n", fieldName))
 	sb.WriteString(fmt.Sprintf("\t\t return nil,errors.New(\"%s is nil\")\n", field))
 	sb.WriteString("\t}\n")
 	return sb.String()
